@@ -12,11 +12,11 @@
 namespace BcContentLink\Test\TestCase\Controller\Api;
 
 use BaserCore\Test\Factory\ContentFactory;
+use BaserCore\Test\Factory\PermissionFactory;
 use BaserCore\Test\Scenario\InitAppScenario;
 use BaserCore\TestSuite\BcTestCase;
 use BcContentLink\Controller\Api\ContentLinksController;
 use BcContentLink\Test\Factory\ContentLinkFactory;
-use Cake\Core\Configure;
 use Cake\TestSuite\IntegrationTestTrait;
 use CakephpFixtureFactories\Scenario\ScenarioAwareTrait;
 
@@ -45,6 +45,7 @@ class ContentLinksControllerTest extends BcTestCase
         'plugin.BaserCore.Factory/UsersUserGroups',
         'plugin.BcContentLink.Factory/ContentLinks',
         'plugin.BaserCore.Factory/Contents',
+        'plugin.BaserCore.Factory/Permissions',
     ];
 
     /**
@@ -114,6 +115,7 @@ class ContentLinksControllerTest extends BcTestCase
         $this->assertEquals('入力エラーです。内容を修正してください。', $result->message);
         $this->assertEquals('関連するコンテンツがありません', $result->errors->content->_required);
     }
+
     /**
      * test edit
      */
@@ -145,9 +147,9 @@ class ContentLinksControllerTest extends BcTestCase
         $this->assertEquals('/test-edit', $result->contentLink->url);
 
         $this->post('/baser/api/bc-content-link/content_links/edit/10.json?token=' . $this->accessToken, $data);
-        $this->assertResponseCode(500);
+        $this->assertResponseCode(404);
         $result = json_decode((string)$this->_response->getBody());
-        $this->assertEquals('データベース処理中にエラーが発生しました。Record not found in table "content_links"', $result->message);
+        $this->assertEquals('データが見つかりません。', $result->message);
 
 
         $data = [
@@ -193,9 +195,9 @@ class ContentLinksControllerTest extends BcTestCase
         $this->assertResponseCode(405);
 
         $this->post('/baser/api/bc-content-link/content_links/delete/10000.json?token=' . $this->accessToken);
-        $this->assertResponseCode(500);
+        $this->assertResponseCode(404);
         $result = json_decode((string)$this->_response->getBody());
-        $this->assertEquals('データベース処理中にエラーが発生しました。Record not found in table "content_links"', $result->message);
+        $this->assertEquals('データが見つかりません。', $result->message);
     }
 
     /**
@@ -230,6 +232,7 @@ class ContentLinksControllerTest extends BcTestCase
         ])->persist();
 
         // ログインしていないかつ公開ContentLinkIDをテスト場合、
+        PermissionFactory::make()->allowGuest('/baser/api/*')->persist();
         $this->get('/baser/api/bc-content-link/content_links/view/1.json');
         // レスポンスを確認
         $this->assertResponseOk();
@@ -240,9 +243,9 @@ class ContentLinksControllerTest extends BcTestCase
         //非公開ContentLinkIDをテスト場合、
         // APIを呼ぶ
         $this->get('/baser/api/bc-content-link/content_links/view/2.json');
-        $this->assertResponseCode(500);
+        $this->assertResponseCode(404);
         $result = json_decode((string)$this->_response->getBody());
-        $this->assertEquals('データベース処理中にエラーが発生しました。Record not found in table "content_links"', $result->message);
+        $this->assertEquals('データが見つかりません。', $result->message);
 
         //ログインしていない状態では status パラメーターへへのアクセスを禁止するか確認
         $this->get('/baser/api/bc-content-link/content_links/view/1.json?status=publish');
