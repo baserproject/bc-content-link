@@ -22,7 +22,7 @@ use Cake\Core\ContainerInterface;
 /**
  * plugin for BcPlugin
  */
-class BcContentLinkPlugin extends BcPlugin
+class Plugin extends BcPlugin
 {
 
     /**
