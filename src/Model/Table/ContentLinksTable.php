@@ -102,7 +102,7 @@ class ContentLinksTable extends AppTable
         $entity->content = new Content([
             'name' => $entity->content->name,
             'parent_id' => $newParentId,
-            'title' => $newTitle ?? $oldEntity->title . '_copy',
+            'title' => $newTitle,
             'author_id' => $newAuthorId,
             'site_id' => $newSiteId,
             'description' => $entity->content->description,
