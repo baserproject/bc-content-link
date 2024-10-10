@@ -34,12 +34,31 @@ class ContentLinksControllerTest extends BcTestCase
     use IntegrationTestTrait;
 
     /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.BaserCore.Factory/Users',
+        'plugin.BaserCore.Factory/Sites',
+        'plugin.BaserCore.Factory/UserGroups',
+        'plugin.BaserCore.Factory/UsersUserGroups',
+        'plugin.BcContentLink.Factory/ContentLinks',
+        'plugin.BaserCore.Factory/Contents',
+        'plugin.BaserCore.Factory/Pages',
+        'plugin.BaserCore.Factory/ContentFolders',
+        'plugin.BaserCore.Factory/SiteConfigs',
+        'plugin.BaserCore.Factory/Permissions',
+    ];
+
+    /**
      * set up
      *
      * @return void
      */
     public function setUp(): void
     {
+        $this->setFixtureTruncate();
         parent::setUp();
         $this->loadFixtureScenario(InitAppScenario::class);
         $token = $this->apiLoginAdmin();
