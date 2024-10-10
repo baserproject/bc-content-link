@@ -11,6 +11,7 @@
 
 namespace BcContentLink\Model\Table;
 
+use BaserCore\Event\BcEventDispatcherTrait;
 use BaserCore\Model\Entity\Content;
 use BaserCore\Model\Table\AppTable;
 use Cake\ORM\Exception\PersistenceFailedException;
@@ -26,6 +27,9 @@ use BaserCore\Annotation\UnitTest;
  */
 class ContentLinksTable extends AppTable
 {
+
+    use BcEventDispatcherTrait;
+
     /**
      * initialize
      *
