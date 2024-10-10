@@ -13,7 +13,6 @@ namespace BcContentLink\Service;
 
 use BcContentLink\Model\Table\ContentLinksTable;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use BaserCore\Annotation\NoTodo;
 use BaserCore\Annotation\Checked;
@@ -25,12 +24,6 @@ use BaserCore\Annotation\UnitTest;
  */
 class ContentLinksService implements ContentLinksServiceInterface
 {
-
-    /**
-     * ContentLinks Table
-     * @var \Cake\ORM\Table|ContentLinksTable
-     */
-    public ContentLinksTable|Table $ContentLinks;
 
     /**
      * Constructor
