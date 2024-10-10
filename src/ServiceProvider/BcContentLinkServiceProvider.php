@@ -28,7 +28,7 @@ class BcContentLinkServiceProvider extends ServiceProvider
      * Provides
      * @var string[]
      */
-    protected array $provides = [
+    protected $provides = [
         ContentLinksServiceInterface::class
     ];
 

@@ -11,7 +11,7 @@
 
 namespace BcContentLink\Model\Entity;
 
-use Cake\I18n\FrozenTime;
+use Cake\I18n\Time as TimeAlias;
 use Cake\ORM\Entity as EntityAlias;
 use BaserCore\Annotation\UnitTest;
 use BaserCore\Annotation\NoTodo;
@@ -21,8 +21,8 @@ use BaserCore\Annotation\Checked;
  * Class ContentLink
  * @property int $id
  * @property string $url
- * @property \Cake\I18n\DateTime $created
- * @property \Cake\I18n\DateTime $modified
+ * @property TimeAlias $created
+ * @property TimeAlias $modified
  */
 class ContentLink extends EntityAlias
 {
@@ -32,7 +32,7 @@ class ContentLink extends EntityAlias
      *
      * @var array
      */
-    protected array $_accessible = [
+    protected $_accessible = [
         '*' => true,
         'id' => false
     ];
