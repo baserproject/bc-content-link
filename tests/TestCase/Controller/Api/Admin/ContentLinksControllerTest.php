@@ -34,31 +34,12 @@ class ContentLinksControllerTest extends BcTestCase
     use IntegrationTestTrait;
 
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BaserCore.Factory/Users',
-        'plugin.BaserCore.Factory/Sites',
-        'plugin.BaserCore.Factory/UserGroups',
-        'plugin.BaserCore.Factory/UsersUserGroups',
-        'plugin.BcContentLink.Factory/ContentLinks',
-        'plugin.BaserCore.Factory/Contents',
-        'plugin.BaserCore.Factory/Pages',
-        'plugin.BaserCore.Factory/ContentFolders',
-        'plugin.BaserCore.Factory/SiteConfigs',
-        'plugin.BaserCore.Factory/Permissions',
-    ];
-
-    /**
      * set up
      *
      * @return void
      */
     public function setUp(): void
     {
-        $this->setFixtureTruncate();
         parent::setUp();
         $this->loadFixtureScenario(InitAppScenario::class);
         $token = $this->apiLoginAdmin();
@@ -159,7 +140,7 @@ class ContentLinksControllerTest extends BcTestCase
         $this->post('/baser/api/admin/bc-content-link/content_links/edit/1.json?token=' . $this->accessToken, $data);
         $this->assertResponseCode(500);
         $result = json_decode((string)$this->_response->getBody());
-        $this->assertEquals('データベース処理中にエラーが発生しました。Cannot convert value of type `string` to integer', $result->message);
+        $this->assertEquals('データベース処理中にエラーが発生しました。Cannot convert value `level` of type `string` to int', $result->message);
 
     }
 
@@ -196,4 +177,37 @@ class ContentLinksControllerTest extends BcTestCase
         $this->assertEquals('データが見つかりません。', $result->message);
     }
 
+    /**
+     * @return void
+     */
+    public function test_view()
+    {
+        //データ生成
+        ContentLinkFactory::make(['id' => 1, 'url' => '/test'])->persist();
+        ContentFactory::make([
+            'id' => 2,
+            'plugin' => 'BcContentLink',
+            'type' => 'ContentLink',
+            'site_id' => 1,
+            'title' => 'test link',
+            'lft' => 1,
+            'rght' => 2,
+            'entity_id' => 1,
+        ])->persist();
+
+        //APIを呼ぶ
+        $this->get('/baser/api/admin/bc-content-link/content_links/view/1.json?token=' . $this->accessToken);
+        //戻る値を確認
+        $this->assertResponseOk();
+        $result = json_decode((string)$this->_response->getBody());
+        $this->assertEquals('test link', $result->contentLink->content->title);
+        $this->assertEquals('/test', $result->contentLink->url);
+
+        //存在しないIDを指定した場合
+        $this->get('/baser/api/admin/bc-content-link/content_links/view/10000.json?token=' . $this->accessToken);
+        //戻る値を確認
+        $this->assertResponseCode(404);
+        $result = json_decode((string)$this->_response->getBody());
+        $this->assertEquals('データが見つかりません。', $result->message);
+    }
 }
