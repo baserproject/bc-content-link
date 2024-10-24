@@ -64,8 +64,10 @@ class ContentLinksTable extends AppTable
         ->requirePresence('id', 'update');
 
         $validator
-        ->scalar('url')
-        ->notEmptyString('url', __d('baser_core', 'リンク先URLを入力してください。'), 'update');
+            ->scalar('url')
+            ->notEmptyString('url', __d('baser_core', 'リンク先URLを入力してください。'), 'update')
+            ->regex('url', '/^http|^\/.*/', __d('baser_core', 'リンク先URLはURLの形式を入力してください。'))
+            ->maxLength('url', 255, __d('baser_core', 'リンク先URLは255文字以内で入力してください。'));
 
         return $validator;
     }
@@ -87,7 +89,7 @@ class ContentLinksTable extends AppTable
      */
     public function copy(int $id, $newParentId, $newTitle, $newAuthorId, $newSiteId)
     {
-        $entity = $this->get($id, ['contain' => ['Contents']]);
+        $entity = $this->get($id, contain: ['Contents']);
         $oldEntity = clone $entity;
 
         // EVENT ContentLinks.beforeCopy
